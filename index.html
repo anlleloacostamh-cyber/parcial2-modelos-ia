@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistemas Inteligentes Aplicados | Anllelo Acosta</title>
+    <style>
+        :root {
+            --primary: #1e3a8a;
+            --secondary: #3b82f6;
+            --accent: #10b981;
+            --bg: #f1f5f9;
+            --card: #ffffff;
+            --text: #1e293b;
+        }
+        * { box-sizing: border-box; font-family: 'Segoe UI', system-ui, sans-serif; }
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 1.8rem 1rem;
+            text-align: center;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        header h1 { margin: 0; font-size: 1.8rem; }
+        header p { margin: 0.4rem 0 0; opacity: 0.9; font-size: 1rem; }
+        .badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.25rem 0.75rem;
+            border-radius: 999px;
+            font-size: 0.85rem;
+            margin-top: 0.6rem;
+        }
+        main {
+            max-width: 850px;
+            width: 92%;
+            margin: 2rem auto;
+            background: var(--card);
+            border-radius: 12px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            flex: 1;
+        }
+        .tabs {
+            display: flex;
+            background: #e2e8f0;
+        }
+        .tab-btn {
+            flex: 1;
+            padding: 1rem;
+            border: none;
+            background: transparent;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #475569;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .tab-btn.active {
+            background: var(--card);
+            color: var(--primary);
+            border-top: 3px solid var(--secondary);
+        }
+        .tab-content {
+            display: none;
+            padding: 2rem;
+        }
+        .tab-content.active { display: block; }
+        .grid-form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+            gap: 1rem;
+        }
+        .form-group { display: flex; flex-direction: column; }
+        label { font-size: 0.85rem; font-weight: 600; margin-bottom: 0.35rem; color: #334155; }
+        select, input[type="file"] {
+            padding: 0.6rem;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            background: #f8fafc;
+        }
+        .btn-action {
+            background: var(--secondary);
+            color: white;
+            border: none;
+            padding: 0.85rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 1.5rem;
+            transition: background 0.2s;
+        }
+        .btn-action:hover { background: var(--primary); }
+        .preview-box {
+            margin-top: 1.2rem;
+            text-align: center;
+        }
+        #previewImg {
+            max-width: 260px;
+            max-height: 260px;
+            border-radius: 10px;
+            display: none;
+            margin: 0 auto;
+            border: 2px solid #e2e8f0;
+        }
+        .result-box {
+            margin-top: 1.5rem;
+            padding: 1.2rem;
+            border-radius: 8px;
+            background: #eff6ff;
+            border-left: 4px solid var(--secondary);
+            display: none;
+        }
+        .result-box.error {
+            background: #fef2f2;
+            border-left-color: #ef4444;
+            color: #991b1b;
+        }
+        footer {
+            text-align: center;
+            padding: 1.2rem;
+            font-size: 0.85rem;
+            color: #64748b;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Plataforma Web de Modelos de Aprendizaje Automático</h1>
+    <p>Sistemas Inteligentes Aplicados a la Educación — Parcial #2</p>
+    <div class="badge">Desarrollado por: <strong>Anllelo Acosta</strong> | UTP - FISC</div>
+</header>
+
+<main>
+    <div class="tabs">
+        <button class="tab-btn active" onclick="cambiarTab('tab-pg', this)">🐶 Clasificador Perros y Gatos</button>
+        <button class="tab-btn" onclick="cambiarTab('tab-ad', this)">🎓 Adaptabilidad Estudiantil</button>
+    </div>
+
+    <!-- PESTAÑA 1: PERROS Y GATOS -->
+    <div id="tab-pg" class="tab-content active">
+        <h2>Clasificación de Imágenes (CNN)</h2>
+        <p>Sube una fotografía de un perro o un gato para que el modelo neuronal la analice.</p>
+        
+        <div class="form-group">
+            <label for="inputFoto">Seleccionar imagen (.jpg, .png):</label>
+            <input type="file" id="inputFoto" accept="image/*" onchange="mostrarVistaPrevia(event)">
+        </div>
+
+        <div class="preview-box">
+            <img id="previewImg" alt="Vista previa">
+        </div>
+
+        <button class="btn-action" onclick="predecirPerroGato()">Analizar Imagen</button>
+        <div id="resultadoPG" class="result-box"></div>
+    </div>
+
+    <!-- PESTAÑA 2: ADAPTABILIDAD -->
+    <div id="tab-ad" class="tab-content">
+        <h2>Evaluación de Adaptabilidad a Clases en Línea</h2>
+        <p>Completa los 13 parámetros del estudiante para predecir su nivel de adaptabilidad.</p>
+
+        <form id="formAdaptabilidad" class="grid-form">
+            <div class="form-group">
+                <label>Género (Gender)</label>
+                <select name="Gender">
+                    <option value="Boy">Boy (Masculino)</option>
+                    <option value="Girl">Girl (Femenino)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Edad (Age)</label>
+                <select name="Age">
+                    <option value="21-25">21-25</option>
+                    <option value="16-20">16-20</option>
+                    <option value="11-15">11-15</option>
+                    <option value="26-30">26-30</option>
+                    <option value="6-10">6-10</option>
+                    <option value="1-5">1-5</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Nivel Educativo (Education Level)</label>
+                <select name="Education Level">
+                    <option value="University">University (Universidad)</option>
+                    <option value="College">College (Colegio)</option>
+                    <option value="School">School (Escuela)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Tipo de Institución (Institution Type)</label>
+                <select name="Institution Type">
+                    <option value="Government">Government (Pública)</option>
+                    <option value="Non Government">Non Government (Privada)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Estudiante de TI (IT Student)</label>
+                <select name="IT Student">
+                    <option value="Yes">Yes (Sí)</option>
+                    <option value="No">No</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Ubicación (Location)</label>
+                <select name="Location">
+                    <option value="Yes">Yes (Urbana)</option>
+                    <option value="No">No (Rural)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Cortes de Energía (Load-shedding)</label>
+                <select name="Load-shedding">
+                    <option value="Low">Low (Bajo)</option>
+                    <option value="High">High (Alto)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Condición Financiera (Financial Condition)</label>
+                <select name="Financial Condition">
+                    <option value="Mid">Mid (Media)</option>
+                    <option value="Poor">Poor (Baja)</option>
+                    <option value="Rich">Rich (Alta)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Tipo de Internet (Internet Type)</label>
+                <select name="Internet Type">
+                    <option value="Wifi">Wifi</option>
+                    <option value="Mobile Data">Mobile Data (Datos móviles)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Tipo de Red (Network Type)</label>
+                <select name="Network Type">
+                    <option value="4G">4G</option>
+                    <option value="3G">3G</option>
+                    <option value="2G">2G</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Duración de Clases (Class Duration)</label>
+                <select name="Class Duration">
+                    <option value="1-3">1-3 horas</option>
+                    <option value="3-6">3-6 horas</option>
+                    <option value="0">0 horas</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>LMS Propio (Self Lms)</label>
+                <select name="Self Lms">
+                    <option value="Yes">Yes (Sí)</option>
+                    <option value="No">No</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Dispositivo (Device)</label>
+                <select name="Device">
+                    <option value="Computer">Computer (Computadora)</option>
+                    <option value="Mobile">Mobile (Celular)</option>
+                    <option value="Tab">Tab (Tablet)</option>
+                </select>
+            </div>
+        </form>
+
+        <button class="btn-action" onclick="predecirAdaptabilidad()">Evaluar Adaptabilidad</button>
+        <div id="resultadoAD" class="result-box"></div>
+    </div>
+</main>
+
+<footer>
+    Universidad Tecnológica de Panamá | Facultad de Ingeniería de Sistemas Computacionales — Anllelo Acosta
+</footer>
+
+<script>
+    // =========================================================================
+    // PEGA AQUÍ EL ENLACE QUE TE GENERA NGROK EN EL PASO 7 (SIN "/" AL FINAL)
+    // =========================================================================
+    const SERVIDOR = "https://agreeable-reliance-schnapps.ngrok-free.dev";
+
+    function cambiarTab(idTab, boton) {
+        document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+        document.getElementById(idTab).classList.add('active');
+        boton.classList.add('active');
+    }
+
+    function mostrarVistaPrevia(event) {
+        const archivo = event.target.files[0];
+        const img = document.getElementById('previewImg');
+        if (archivo) {
+            img.src = URL.createObjectURL(archivo);
+            img.style.display = 'block';
+        }
+    }
+
+    async function predecirPerroGato() {
+        const input = document.getElementById('inputFoto');
+        const box = document.getElementById('resultadoPG');
+        if (!input.files[0]) {
+            alert("Por favor, selecciona una imagen primero.");
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append("imagen", input.files[0]);
+
+        box.style.display = 'block';
+        box.className = 'result-box';
+        box.innerHTML = "Analizando imagen en el servidor...";
+
+        try {
+            const resp = await fetch(SERVIDOR + "/api/perros-gatos", {
+                method: "POST",
+                body: formData
+            });
+            const data = await resp.json();
+            const porcentaje = (data.confianza * 100).toFixed(2);
+            box.innerHTML = `
+                <strong>Resultado:</strong> Es un <strong>${data.etiqueta.toUpperCase()}</strong><br>
+                <strong>Confianza del modelo:</strong> ${porcentaje}%
+            `;
+        } catch (err) {
+            box.className = 'result-box error';
+            box.innerHTML = "Error al conectar con el servidor. Verifica que la celda del Paso 7 en Colab esté corriendo y que la variable SERVIDOR tenga el enlace actual.";
+        }
+    }
+
+    async function predecirAdaptabilidad() {
+        const form = document.getElementById('formAdaptabilidad');
+        const box = document.getElementById('resultadoAD');
+        const formData = new FormData(form);
+        const datos = Object.fromEntries(formData.entries());
+
+        box.style.display = 'block';
+        box.className = 'result-box';
+        box.innerHTML = "Consultando modelo de adaptabilidad...";
+
+        try {
+            const resp = await fetch(SERVIDOR + "/api/adaptabilidad", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(datos)
+            });
+            const data = await resp.json();
+            
+            let detalleProbs = data.probabilidades
+                .map(p => `${p.nivel}: ${(p.prob * 100).toFixed(1)}%`)
+                .join(" | ");
+
+            box.innerHTML = `
+                <strong>Nivel de Adaptabilidad Predicho:</strong> ${data.nivel}<br>
+                <small>Probabilidades: ${detalleProbs}</small>
+            `;
+        } catch (err) {
+            box.className = 'result-box error';
+            box.innerHTML = "Error al conectar con el servidor. Revisa tu enlace de ngrok en el código.";
+        }
+    }
+</script>
+
+</body>
+</html>
